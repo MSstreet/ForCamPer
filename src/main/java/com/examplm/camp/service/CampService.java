@@ -1,9 +1,6 @@
 package com.examplm.camp.service;
 
-import org.springframework.stereotype.Service;
+public interface CampService {
 
-@Service
-public class CampService {
-
-
+    void SaveCampingSites();
 }
