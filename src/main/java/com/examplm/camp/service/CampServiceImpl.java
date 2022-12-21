@@ -3,13 +3,17 @@ package com.examplm.camp.service;
 import com.examplm.camp.dao.CampRepository;
 import com.examplm.camp.domain.CampSite;
 import com.examplm.camp.dto.CampSiteDto;
+import com.examplm.camp.dto.PageRequestDTO;
+import com.examplm.camp.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,6 +22,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -28,6 +35,7 @@ public class CampServiceImpl implements CampService{
     @Value("${camp.serviceKey}")
     private String serviceKey;
 
+    private final ModelMapper modelMapper;
     private final CampRepository campRepository;
 
     @Override
@@ -39,7 +47,7 @@ public class CampServiceImpl implements CampService{
         try {
             String apiUrl = "http://apis.data.go.kr/B551011/GoCamping/basedList?" +
                     "serviceKey=" + this.serviceKey +
-                    "&numOfRows=10" + //need to add
+                    "&numOfRows=3308" + //need to add
                     //"&pageNo=1" +
                     "&MobileOS=ETC" +
                     "&MobileApp=TestApp" +
@@ -56,7 +64,6 @@ public class CampServiceImpl implements CampService{
                 result.append(returnLine);
             }
 
-            //System.out.println("response body : " + result);
 
             JSONObject obj = new JSONObject(result.toString());
             JSONObject jResponse = obj.getJSONObject("response");
@@ -101,13 +108,40 @@ public class CampServiceImpl implements CampService{
 
             }
 
-            //System.out.println(jitem);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
+
+    @Override
+    public CampSiteDto readOne(Long campNum){
+
+        Optional<CampSite> result = campRepository.findById(campNum);
+
+        CampSite campSite = result.orElseThrow();
+
+        CampSiteDto campSiteDto = modelMapper.map(campSite,CampSiteDto.class);
+
+        return campSiteDto;
+    }
+
+    @Override
+    public PageResponseDTO<CampSiteDto> list(PageRequestDTO pageRequestDTO){
+        String[] types = pageRequestDTO.getType();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable();
+
+        Page<CampSite> result = campRepository.searchAll(types, keyword, pageable);
+
+
+        List<CampSiteDto> dtoList = result.getContent().stream().map(reviewBoard -> modelMapper.map(reviewBoard,
+                CampSiteDto.class)).collect(Collectors.toList());
+
+        return PageResponseDTO.<CampSiteDto>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
 }

@@ -5,24 +5,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class CampSite {
+public class CampSite extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long CampNum;
+    private Long campNum;
 
+    @Column(length = 500)
     private String facltNm;
 
+    @Column(length = 3500)
     private String intro;
 
     private String lineIntro;
@@ -30,7 +29,6 @@ public class CampSite {
     private String firstImageUrl;
 
     private String animalCmgCl;
-
 
     private String indvdlCaravSiteCo;
 
@@ -43,13 +41,14 @@ public class CampSite {
     private String gnrlSiteCo;
 
     private String manageNmpr;
-
+    @Column(length = 500)
     private String resveUrl;
 
     private String homepage;
 
     private String tel;
 
+    @Column(length = 1000)
     private String direction;
 
     private String mapX;
@@ -66,6 +65,7 @@ public class CampSite {
 
     private String sigunguNm;
 
+    @Column(length = 500)
     private String featureNm;
 
     private String toiletCo;
