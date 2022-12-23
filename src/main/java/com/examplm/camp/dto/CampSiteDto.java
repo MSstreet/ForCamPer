@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CampSiteDto {
 
-    private Long CampNum;
+    private Long campNum;
 
     private String facltNm;
 

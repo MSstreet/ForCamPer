@@ -11,7 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JsonParser;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -134,7 +134,7 @@ public class CampServiceImpl implements CampService{
         Page<CampSite> result = campRepository.searchAll(types, keyword, pageable);
 
 
-        List<CampSiteDto> dtoList = result.getContent().stream().map(reviewBoard -> modelMapper.map(reviewBoard,
+        List<CampSiteDto> dtoList = result.getContent().stream().map(campSite -> modelMapper.map(campSite,
                 CampSiteDto.class)).collect(Collectors.toList());
 
         return PageResponseDTO.<CampSiteDto>withAll()
