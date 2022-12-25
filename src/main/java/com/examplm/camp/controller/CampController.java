@@ -33,4 +33,14 @@ public class CampController {
         //return "camping/list";
     }
 
+    @GetMapping("/list1")
+    public void list1(PageRequestDTO pageRequestDTO, Model model){
+        PageResponseDTO<CampSiteDto> responseDTO = campService.list(pageRequestDTO);
+
+        model.addAttribute("responseDTO", responseDTO);
+
+        //return "camping/list";
+    }
+
+
 }
