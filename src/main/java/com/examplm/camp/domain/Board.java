@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -35,6 +36,7 @@ public class Board extends BaseEntity{
     @Column(length = 2000, nullable = false)
     private String content;
 
+    @ColumnDefault("0") //default 0
     private boolean deleteYn;
 
     public void change(String title, String content){
